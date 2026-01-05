@@ -15,6 +15,10 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth:api', except: ['index', 'show']),
+            // Solo quien tenga permiso puede crear
+            new Middleware('permission:crear historiales', only: ['store']),
+            // Solo quien tenga permiso puede eliminar
+            new Middleware('permission:eliminar historiales', only: ['destroy']),
         ];
     }
 
