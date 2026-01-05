@@ -26,11 +26,13 @@ class AuthController extends Controller implements HasMiddleware
             'password' => 'required|string|min:6',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+
+        $user->assignRole('operador');
 
         return $this->login($request);
     }
