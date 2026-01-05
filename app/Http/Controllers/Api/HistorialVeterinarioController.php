@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HistorialVeterinarioResource;
+use App\Http\Requests\StoreHistorialRequest;
+use App\Http\Requests\UpdateHistorialRequest;
 use App\Models\HistorialVeterinario;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -30,15 +31,9 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
         );
     }
 
-    public function store(Request $request)
+    public function store(StoreHistorialRequest $request)
     {
-        $data = $request->validate([
-            'mascota_id' => 'required|exists:mascotas,id',
-            'fecha_atencion' => 'required|date',
-            'diagnostico' => 'required|string',
-            'tratamiento' => 'required|string',
-            'observaciones' => 'nullable|string',
-        ]);
+        $data = $request->validated();
 
         $data['usuario_id'] = auth('api')->id();
 
@@ -55,16 +50,10 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
         return new HistorialVeterinarioResource($historiale);
     }
 
-    public function update(Request $request, HistorialVeterinario $historiale)
+    public function update(UpdateHistorialRequest $request, HistorialVeterinario $historiale)
     {
-        $data = $request->validate([
-            'fecha_atencion' => 'sometimes|date',
-            'diagnostico' => 'sometimes|string',
-            'tratamiento' => 'sometimes|string',
-            'observaciones' => 'nullable|string',
-        ]);
+        $historiale->update($request->validated());
 
-        $historiale->update($data);
         return new HistorialVeterinarioResource($historiale->fresh()->load(['mascota', 'usuario']));
     }
 

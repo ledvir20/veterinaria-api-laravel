@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreDuenoRequest;
+use App\Http\Requests\UpdateDuenoRequest;
+use App\Http\Resources\DuenoResource;
 use App\Models\Dueno;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -19,46 +21,28 @@ class DuenoController extends Controller implements HasMiddleware
 
     public function index()
     {
-        return response()->json(
+        return DuenoResource::collection(
             Dueno::with('mascotas')->get()
         );
     }
 
-    public function store(Request $request)
+    public function store(StoreDuenoRequest $request)
     {
-        $data = $request->validate([
-            'nombres' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
-            'dni' => 'required|string|size:8|unique:duenos',
-            'telefono' => 'nullable|string',
-            'direccion' => 'nullable|string',
-        ]);
+        $dueno = Dueno::create($request->validated());
 
-        $dueno = Dueno::create($data);
-
-        return response()->json($dueno, 201);
+        return (new DuenoResource($dueno->load('mascotas')))->response()->setStatusCode(201);
     }
 
     public function show(Dueno $dueno)
     {
-        return response()->json(
-            $dueno->load('mascotas')
-        );
+        return new DuenoResource($dueno->load('mascotas'));
     }
 
-    public function update(Request $request, Dueno $dueno)
+    public function update(UpdateDuenoRequest $request, Dueno $dueno)
     {
-        $data = $request->validate([
-            'nombres' => 'sometimes|string|max:255',
-            'apellidos' => 'sometimes|string|max:255',
-            'dni' => 'sometimes|string|size:8|unique:duenos,dni,' . $dueno->id,
-            'telefono' => 'nullable|string',
-            'direccion' => 'nullable|string',
-        ]);
+        $dueno->update($request->validated());
 
-        $dueno->update($data);
-
-        return response()->json($dueno);
+        return new DuenoResource($dueno->fresh()->load('mascotas'));
     }
 
     public function destroy(Dueno $dueno)
