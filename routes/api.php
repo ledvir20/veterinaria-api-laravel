@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DuenoController;
+use App\Http\Controllers\Api\HistorialVeterinarioController;
 use App\Http\Controllers\Api\MascotaController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,4 @@ Route::group([
 
 Route::apiResource('duenos', DuenoController::class);
 Route::apiResource('mascotas', MascotaController::class);
+Route::apiResource('historiales', HistorialVeterinarioController::class);
