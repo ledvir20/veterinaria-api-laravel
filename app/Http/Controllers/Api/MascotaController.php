@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Mascota;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -77,5 +78,23 @@ class MascotaController extends Controller implements HasMiddleware
         return response()->json([
             'message' => 'Mascota eliminada correctamente'
         ]);
+    }
+
+    public function descargarCarnet($id)
+    {
+        // Buscamos la mascota con su dueño
+        $mascota = Mascota::with('dueno')->findOrFail($id);
+
+        // Cargamos la vista y pasamos los datos
+        $pdf = Pdf::loadView('pdf.carnet', compact('mascota'));
+
+        // Configurar tamaño de papel: Personalizado o A4 (aquí usaremos A4 para imprimir fácil)
+        $pdf->setPaper('a4', 'portrait');
+
+        // Opción A: Descargar directamente
+        return $pdf->download('carnet-' . $mascota->dni_mascota . '.pdf');
+
+        // Opción B: Ver en el navegador (útil para pruebas)
+        // return $pdf->stream();
     }
 }

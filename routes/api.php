@@ -22,5 +22,10 @@ Route::group([
 
 
 Route::apiResource('duenos', DuenoController::class);
+
+// Ruta para descargar el PDF
+Route::get('/mascotas/{id}/carnet', [MascotaController::class, 'descargarCarnet']);
+
 Route::apiResource('mascotas', MascotaController::class);
+
 Route::apiResource('historiales', HistorialVeterinarioController::class);
