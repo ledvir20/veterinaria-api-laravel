@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DuenoController;
+use App\Http\Controllers\Api\MascotaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,3 +18,7 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
     Route::post('/me', [AuthController::class, 'me'])->name('me');
 });
+
+
+Route::apiResource('duenos', DuenoController::class);
+Route::apiResource('mascotas', MascotaController::class);
