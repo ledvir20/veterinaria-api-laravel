@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\AuthResource;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -34,7 +36,14 @@ class AuthController extends Controller implements HasMiddleware
 
         $user->assignRole('operador');
 
-        return $this->login($request);
+        // iniciar sesión y devolver recurso
+        $token = auth('api')->attempt([
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'active' => true,
+        ]);
+
+        return new AuthResource(['user' => $user, 'token' => $token]);
     }
 
     public function login(Request $request)
@@ -54,13 +63,14 @@ class AuthController extends Controller implements HasMiddleware
             ], 401);
         }
 
-
-        return $this->respondWithToken($token);
+        return new AuthResource(['user' => auth('api')->user(), 'token' => $token]);
     }
 
     public function me()
     {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+
+        return new UserResource($user);
     }
 
     public function logout()
@@ -72,15 +82,8 @@ class AuthController extends Controller implements HasMiddleware
 
     public function refresh()
     {
-        return $this->respondWithToken(Auth::refresh());
-    }
+        $token = Auth::refresh();
 
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
-        ]);
+        return new AuthResource(['user' => auth('api')->user(), 'token' => $token]);
     }
 }
