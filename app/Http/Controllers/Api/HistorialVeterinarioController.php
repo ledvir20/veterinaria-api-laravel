@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\HistorialVeterinarioResource;
 use App\Models\HistorialVeterinario;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -24,7 +25,7 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
 
     public function index()
     {
-        return response()->json(
+        return HistorialVeterinarioResource::collection(
             HistorialVeterinario::with(['mascota', 'usuario'])->get()
         );
     }
@@ -43,7 +44,7 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
 
         $historial = HistorialVeterinario::create($data);
 
-        return response()->json($historial, 201);
+        return (new HistorialVeterinarioResource($historial->load(['mascota', 'usuario'])))->response()->setStatusCode(201);
     }
 
     public function show(HistorialVeterinario $historiale)
@@ -51,7 +52,7 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
         // cargar relaciones sobre la instancia ya vinculada
         $historiale->load(['mascota', 'usuario']);
 
-        return response()->json($historiale);
+        return new HistorialVeterinarioResource($historiale);
     }
 
     public function update(Request $request, HistorialVeterinario $historiale)
@@ -64,14 +65,12 @@ class HistorialVeterinarioController extends Controller implements HasMiddleware
         ]);
 
         $historiale->update($data);
-
-        return response()->json($historiale);
+        return new HistorialVeterinarioResource($historiale->fresh()->load(['mascota', 'usuario']));
     }
 
     public function destroy(HistorialVeterinario $historiale)
     {
         $historiale->delete();
-
         return response()->json([
             'message' => 'Historial veterinario eliminado correctamente'
         ]);
