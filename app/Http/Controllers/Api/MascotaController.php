@@ -38,8 +38,10 @@ class MascotaController extends Controller implements HasMiddleware
             'dueno_id' => 'required|exists:duenos,id',
         ]);
 
-        $data['dni_mascota'] = 'PET-' . strtoupper(Str::random(8));
+        // Ya no es necesario generar el dni_mascota aquí
+        // $data['dni_mascota'] = 'PET-' . strtoupper(Str::random(8));
 
+        // El modelo Mascota se encargará de generar el dni_mascota automáticamente
         $mascota = Mascota::create($data);
 
         return response()->json($mascota, 201);
