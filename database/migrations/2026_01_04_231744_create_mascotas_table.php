@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('mascotas', function (Blueprint $table) {
             $table->id();
-            $table->string('dni_mascota')->unique();
+            $table->string('dni_mascota')->unique()->index();
             $table->string('nombre');
             $table->enum('especie', ['Perro', 'Gato', 'Otro']);
             $table->string('raza')->nullable();
@@ -26,6 +26,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

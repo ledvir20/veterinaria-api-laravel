@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('nombres');
             $table->string('apellidos');
-            $table->string('dni', 8)->unique();
+            $table->string('dni', 8)->unique()->index();
             $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

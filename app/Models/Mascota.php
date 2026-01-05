@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mascota extends Model
 {
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+
     protected $fillable = [
         'dni_mascota',
         'nombre',

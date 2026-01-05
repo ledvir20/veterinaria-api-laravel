@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dueno extends Model
 {
+
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+
     protected $fillable = [
         'nombres',
         'apellidos',
