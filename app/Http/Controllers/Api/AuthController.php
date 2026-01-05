@@ -42,14 +42,16 @@ class AuthController extends Controller implements HasMiddleware
             'password' => 'required|string|min:6',
         ]);
 
-        $credentials = [
+        if (! $token = auth('api')->attempt([
             'email' => $data['email'],
             'password' => $data['password'],
-        ];
-
-        if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'No autorizado'], 401);
+            'active' => true,
+        ])) {
+            return response()->json([
+                'message' => 'Credenciales inválidas o usuario inactivo'
+            ], 401);
         }
+
 
         return $this->respondWithToken($token);
     }
