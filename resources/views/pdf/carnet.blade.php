@@ -1,202 +1,161 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Carnet Veterinario MPH</title>
     <style>
         @page {
+            /* Eliminamos márgenes de la página para tener control total */
             margin: 0;
             padding: 0;
         }
-
         body {
             font-family: Arial, Helvetica, sans-serif;
-            margin: 20px;
-            /* Margen para que no se pegue al borde de la hoja A4 al imprimir */
-            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px; /* Un poco de aire alrededor del carnet */
         }
 
-        /* Contenedor principal tamaño tarjeta de crédito (CR80) */
+        /* --- CONTENEDOR PRINCIPAL --- */
         .carnet-container {
+            /* Ancho estándar CR80 (Tarjeta de crédito) */
             width: 85.6mm;
             height: 53.98mm;
             background-color: #fff;
             border-radius: 8px;
-            /* Bordes redondeados del carnet */
             overflow: hidden;
-            /* Para que el header corte bien las esquinas */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: 1px solid #ccc;
             position: relative;
         }
 
-        /* --- COLORES INSTITUCIONALES --- */
+        /* --- COLORES --- */
         :root {
             --mph-red: #7e1616;
-            /* Rojo vino institucional */
             --mph-red-light: #a32a2a;
-            /* Un tono ligeramente más claro para el resalte */
-            --text-dark: #333;
-            --text-label: #555;
         }
 
         /* --- HEADER --- */
         .header-table {
             width: 100%;
-            background-color: var(--mph-red);
+            background-color: #7e1616;
             color: white;
-            padding: 4px 8px;
-            border-bottom: 2px solid #5a0f0f;
+            border-collapse: collapse;
         }
-
+        .header-table td {
+            padding: 3px 5px;
+            vertical-align: middle;
+        }
         .logo-cell {
-            width: 40px;
-            vertical-align: middle;
+            width: 30px;
+            text-align: center;
         }
-
         .header-text-cell {
-            vertical-align: middle;
             text-align: left;
-            padding-left: 5px;
         }
-
         .header-title {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: bold;
             margin: 0;
             text-transform: uppercase;
+            line-height: 1;
         }
-
         .header-subtitle {
-            font-size: 6px;
-            margin: 1px 0 0 0;
+            font-size: 5px;
+            margin: 2px 0 0 0;
+            text-transform: uppercase;
             opacity: 0.9;
         }
 
-        /* --- CUERPO PRINCIPAL (LAYOUT DE 2 COLUMNAS) --- */
+        /* --- CUERPO --- */
         .main-content-table {
             width: 100%;
-            height: 75%;
-            /* Ocupar el espacio restante */
             border-collapse: collapse;
+            /* table-layout: fixed ayuda a que no se desborde */
+            table-layout: fixed;
+            margin-top: 0;
         }
 
+        /* Columna Izquierda (Foto/QR) */
         .left-column {
-            width: 32%;
+            width: 30%;
             vertical-align: top;
-            padding: 8px 4px 8px 8px;
+            padding: 5px 2px;
             text-align: center;
+            background-color: #f9f9f9;
             border-right: 1px dotted #ccc;
         }
 
+        /* Columna Derecha (Datos) */
         .right-column {
-            width: 68%;
+            width: 70%;
             vertical-align: top;
-            padding: 8px 8px 8px 6px;
+            padding: 5px 8px;
         }
 
-        /* --- ESTILOS COLUMNA IZQUIERDA (FOTO Y DNI) --- */
-        .photo-container {
-            width: 65px;
-            height: 75px;
-            background-color: #e0e0e0;
-            border: 2px solid var(--mph-red);
-            border-radius: 6px;
-            margin: 0 auto 5px auto;
-            overflow: hidden;
+        /* Elementos Visuales */
+        .photo-box {
+            width: 50px;
+            height: 60px;
+            background-color: #eee;
+            border: 1px solid #7e1616;
+            margin: 0 auto 4px auto;
             position: relative;
         }
-
-        /* Usar esto para centrar el texto si no hay foto real */
-        .photo-placeholder-text {
+        .photo-text {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 8px;
-            color: #999;
-            font-weight: bold;
+            font-size: 6px; color: #999;
         }
 
-        .dni-label {
-            font-size: 6px;
-            font-weight: bold;
-            color: var(--mph-red);
-            margin-bottom: 1px;
-        }
+        .dni-label { font-size: 5px; color: #7e1616; font-weight: bold; }
+        .dni-value { font-size: 8px; font-weight: bold; margin-bottom: 4px; color: #000; }
 
-        .dni-value {
-            font-size: 10px;
+        /* Campos de datos */
+        .field-row { margin-bottom: 3px; }
+        .label {
+            font-size: 5px;
+            color: #666;
             font-weight: bold;
-            color: #000;
-        }
-
-        /* --- ESTILOS COLUMNA DERECHA (DATOS) --- */
-        .data-field {
-            margin-bottom: 4px;
-        }
-
-        .field-label {
-            font-size: 6px;
-            font-weight: bold;
-            color: var(--text-label);
-            text-transform: uppercase;
             display: block;
+            text-transform: uppercase;
         }
-
-        .field-value {
-            font-size: 9px;
-            color: var(--text-dark);
+        .value {
+            font-size: 9px; /* Tamaño seguro para que se vea */
+            color: #000;
             font-weight: bold;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* --- CAMPO RESALTADO (Estilo "CARGO" de la imagen) --- */
         .highlight-box {
-            background-color: var(--mph-red-light);
+            background-color: #a32a2a;
             color: white;
-            padding: 4px 6px;
-            border-radius: 4px;
-            margin-top: 6px;
-            display: inline-block;
-            /* Para que se ajuste al contenido o darle width 100% */
-            width: 95%;
+            padding: 3px;
+            border-radius: 3px;
+            margin-top: 3px;
         }
+        .highlight-box .label { color: #ffcccc; }
+        .highlight-box .value { color: white; white-space: normal; line-height: 1.1; }
 
-        .highlight-box .field-label {
-            color: #ffcccc;
-            /* Un rosa pálido para la etiqueta sobre rojo */
-        }
-
-        .highlight-box .field-value {
-            color: white;
-            font-size: 10px;
-            margin-top: 2px;
-        }
-
-        /* --- FOOTER --- */
-        .footer-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background-color: var(--mph-red);
+        .footer-stripe {
+            position: absolute; bottom: 0; left: 0;
+            width: 100%; height: 4px; background-color: #7e1616;
         }
     </style>
 </head>
-
 <body>
 
     <div class="carnet-container">
         <table class="header-table">
             <tr>
                 <td class="logo-cell">
-                    <img src="{{ public_path('images/logo_mph.png') }}" width="35" height="auto" alt="Escudo MPH">
+                    <img src="{{ public_path('images/logo_mph.png') }}" width="25" style="display:block;">
                 </td>
                 <td class="header-text-cell">
-                    <h1 class="header-title">MUNICIPALIDAD PROVINCIAL DE HUAMANGA</h1>
-                    {{-- <p class="header-subtitle">GERENCIA DE SERVICIOS PÚBLICOS</p>
-                    <p class="header-subtitle" style="font-weight: bold;">REGISTRO VETERINARIO MUNICIPAL</p> --}}
+                    <div class="header-title">MUNICIPALIDAD PROV. HUAMANGA</div>
+                    <div class="header-subtitle">REGISTRO VETERINARIO MUNICIPAL</div>
                 </td>
             </tr>
         </table>
@@ -204,61 +163,55 @@
         <table class="main-content-table">
             <tr>
                 <td class="left-column">
-                    <div class="photo-container">
-                        <div class="photo-placeholder-text">FOTO MASCOTA</div>
+                    <div class="photo-box">
+                        <div class="photo-text">FOTO</div>
                     </div>
 
-                    <div class="dni-label">N° REGISTRO (DNI)</div>
+                    <div class="dni-label">N° REGISTRO</div>
                     <div class="dni-value">{{ $mascota->dni_mascota }}</div>
 
-                    <div style="margin-top:5px; text-align: center;">
-                        <img src="data:image/svg+xml;base64, {{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(150)->margin(0)->generate($mascota->dni_mascota)) }}"
-                            width="45" height="45">
-                    </div>
-
-
+                    <img src="data:image/svg+xml;base64, {{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->margin(0)->generate($mascota->dni_mascota)) }}"
+                         width="40" height="40">
                 </td>
 
                 <td class="right-column">
-                    <div class="data-field">
-                        <span class="field-label">NOMBRE DE LA MASCOTA</span>
-                        <span class="field-value" style="font-size: 11px;">{{ strtoupper($mascota->nombre) }}</span>
+                    <div class="field-row">
+                        <span class="label">NOMBRE DE LA MASCOTA</span>
+                        <span class="value" style="font-size: 10px;">{{ strtoupper($mascota->nombre) }}</span>
                     </div>
 
-                    <table width="100%" style="border-collapse: collapse;">
+                    <table style="width: 100%; border-collapse: collapse;">
                         <tr>
-                            <td width="60%">
-                                <div class="data-field">
-                                    <span class="field-label">ESPECIE / RAZA</span>
-                                    <span class="field-value">{{ $mascota->especie }} /
-                                        {{ \Illuminate\Support\Str::limit($mascota->raza ?? 'Mestizo', 15) }}</span>
-                                </div>
+                            <td style="width: 60%; padding: 0;">
+                                <span class="label">ESPECIE / RAZA</span>
+                                <span class="value">{{ $mascota->especie }}</span>
+                                <span class="value" style="font-size: 7px; font-weight: normal;">{{ \Illuminate\Support\Str::limit($mascota->raza ?? 'Mestizo', 16) }}</span>
                             </td>
-                            <td>
-                                <div class="data-field">
-                                    <span class="field-label">SEXO / NACIMIENTO</span>
-                                    <span class="field-value">{{ $mascota->sexo }} /
-                                        {{ $mascota->fecha_nacimiento ? date('d/m/Y', strtotime($mascota->fecha_nacimiento)) : '---' }}</span>
-                                </div>
+                            <td style="width: 40%; padding: 0;">
+                                <span class="label">SEXO / NAC.</span>
+                                <span class="value">{{ $mascota->sexo }}</span>
+                                <span class="value" style="font-size: 7px;">{{ $mascota->fecha_nacimiento }}</span>
                             </td>
                         </tr>
                     </table>
 
+                    <div class="field-row" style="margin-top: 3px;">
+                        <span class="label">COLOR / SEÑAS</span>
+                        <span class="value" style="font-size: 8px;">{{ \Illuminate\Support\Str::limit($mascota->color, 20) }}</span>
+                    </div>
+
                     <div class="highlight-box">
-                        <span class="field-label">PROPIETARIO RESPONSABLE</span>
-                        <div class="field-value">
-                            {{ strtoupper($mascota->dueno->nombres) }}
-                            <br>
-                            {{ strtoupper($mascota->dueno->apellidos) }}
-                        </div>
+                        <span class="label">PROPIETARIO RESPONSABLE</span>
+                        <span class="value" style="font-size: 8px;">
+                            {{ strtoupper($mascota->dueno->nombres) }} {{ strtoupper($mascota->dueno->apellidos) }}
+                        </span>
                     </div>
                 </td>
             </tr>
         </table>
 
-        <div class="footer-bar"></div>
+        <div class="footer-stripe"></div>
     </div>
 
 </body>
-
 </html>
