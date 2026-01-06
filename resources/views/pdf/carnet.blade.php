@@ -4,20 +4,11 @@
     <meta charset="UTF-8">
     <title>Carnet Veterinario MPH</title>
     <style>
-        @page {
-            /* Eliminamos márgenes de la página para tener control total */
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 0;
-            padding: 20px; /* Un poco de aire alrededor del carnet */
-        }
+        @page { margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 20px; }
 
-        /* --- CONTENEDOR PRINCIPAL --- */
+        /* Contenedor CR80 */
         .carnet-container {
-            /* Ancho estándar CR80 (Tarjeta de crédito) */
             width: 85.6mm;
             height: 53.98mm;
             background-color: #fff;
@@ -27,122 +18,38 @@
             position: relative;
         }
 
-        /* --- COLORES --- */
-        :root {
-            --mph-red: #7e1616;
-            --mph-red-light: #a32a2a;
-        }
+        :root { --mph-red: #7e1616; --mph-red-light: #a32a2a; }
 
-        /* --- HEADER --- */
-        .header-table {
-            width: 100%;
-            background-color: #7e1616;
-            color: white;
-            border-collapse: collapse;
-        }
-        .header-table td {
-            padding: 3px 5px;
-            vertical-align: middle;
-        }
-        .logo-cell {
-            width: 30px;
-            text-align: center;
-        }
-        .header-text-cell {
-            text-align: left;
-        }
-        .header-title {
-            font-size: 8px;
-            font-weight: bold;
-            margin: 0;
-            text-transform: uppercase;
-            line-height: 1;
-        }
-        .header-subtitle {
-            font-size: 5px;
-            margin: 2px 0 0 0;
-            text-transform: uppercase;
-            opacity: 0.9;
-        }
+        /* Header */
+        .header-table { width: 100%; background-color: #7e1616; color: white; border-collapse: collapse; }
+        .header-table td { padding: 3px 5px; vertical-align: middle; }
+        .logo-cell { width: 30px; text-align: center; }
+        .header-text-cell { text-align: left; }
+        .header-title { font-size: 8px; font-weight: bold; margin: 0; text-transform: uppercase; line-height: 1; }
+        .header-subtitle { font-size: 5px; margin: 2px 0 0 0; text-transform: uppercase; opacity: 0.9; }
 
-        /* --- CUERPO --- */
-        .main-content-table {
-            width: 100%;
-            border-collapse: collapse;
-            /* table-layout: fixed ayuda a que no se desborde */
-            table-layout: fixed;
-            margin-top: 0;
-        }
+        /* Cuerpo */
+        .main-content-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 0; }
+        .left-column { width: 30%; vertical-align: top; padding: 5px 2px; text-align: center; background-color: #f9f9f9; border-right: 1px dotted #ccc; }
+        .right-column { width: 70%; vertical-align: top; padding: 5px 8px; }
 
-        /* Columna Izquierda (Foto/QR) */
-        .left-column {
-            width: 30%;
-            vertical-align: top;
-            padding: 5px 2px;
-            text-align: center;
-            background-color: #f9f9f9;
-            border-right: 1px dotted #ccc;
-        }
-
-        /* Columna Derecha (Datos) */
-        .right-column {
-            width: 70%;
-            vertical-align: top;
-            padding: 5px 8px;
-        }
-
-        /* Elementos Visuales */
-        .photo-box {
-            width: 50px;
-            height: 60px;
-            background-color: #eee;
-            border: 1px solid #7e1616;
-            margin: 0 auto 4px auto;
-            position: relative;
-        }
-        .photo-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 6px; color: #999;
-        }
-
+        /* Foto y QR */
+        .photo-box { width: 50px; height: 60px; background-color: #eee; border: 1px solid #7e1616; margin: 0 auto 4px auto; position: relative; }
+        .photo-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 6px; color: #999; }
         .dni-label { font-size: 5px; color: #7e1616; font-weight: bold; }
         .dni-value { font-size: 8px; font-weight: bold; margin-bottom: 4px; color: #000; }
 
-        /* Campos de datos */
+        /* Datos */
         .field-row { margin-bottom: 3px; }
-        .label {
-            font-size: 5px;
-            color: #666;
-            font-weight: bold;
-            display: block;
-            text-transform: uppercase;
-        }
-        .value {
-            font-size: 9px; /* Tamaño seguro para que se vea */
-            color: #000;
-            font-weight: bold;
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .label { font-size: 5px; color: #666; font-weight: bold; display: block; text-transform: uppercase; }
+        .value { font-size: 9px; color: #000; font-weight: bold; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .highlight-box {
-            background-color: #a32a2a;
-            color: white;
-            padding: 3px;
-            border-radius: 3px;
-            margin-top: 3px;
-        }
+        /* Resalte Propietario */
+        .highlight-box { background-color: #a32a2a; color: white; padding: 3px; border-radius: 3px; margin-top: 3px; }
         .highlight-box .label { color: #ffcccc; }
-        .highlight-box .value { color: white; white-space: normal; line-height: 1.1; }
+        .highlight-box .value { color: white; white-space: normal; line-height: 1.1; font-size: 8px;}
 
-        .footer-stripe {
-            position: absolute; bottom: 0; left: 0;
-            width: 100%; height: 4px; background-color: #7e1616;
-        }
+        .footer-stripe { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background-color: #7e1616; }
     </style>
 </head>
 <body>
@@ -185,25 +92,32 @@
                             <td style="width: 60%; padding: 0;">
                                 <span class="label">ESPECIE / RAZA</span>
                                 <span class="value">{{ $mascota->especie }}</span>
-                                <span class="value" style="font-size: 7px; font-weight: normal;">{{ \Illuminate\Support\Str::limit($mascota->raza ?? 'Mestizo', 16) }}</span>
+                                <span class="value" style="font-size: 7px; font-weight: normal;">
+                                    {{ \Illuminate\Support\Str::limit($mascota->raza ?? 'MESTIZO', 16) }}
+                                </span>
                             </td>
                             <td style="width: 40%; padding: 0;">
                                 <span class="label">SEXO / NAC.</span>
                                 <span class="value">{{ $mascota->sexo }}</span>
-                                <span class="value" style="font-size: 7px;">{{ $mascota->fecha_nacimiento }}</span>
+                                <span class="value" style="font-size: 7px;">
+                                    {{ $mascota->fecha_nacimiento ? date('d/m/y', strtotime($mascota->fecha_nacimiento)) : 'NO REG.' }}
+                                </span>
                             </td>
                         </tr>
                     </table>
 
                     <div class="field-row" style="margin-top: 3px;">
                         <span class="label">COLOR / SEÑAS</span>
-                        <span class="value" style="font-size: 8px;">{{ \Illuminate\Support\Str::limit($mascota->color, 20) }}</span>
+                        <span class="value" style="font-size: 8px;">
+                            {{ \Illuminate\Support\Str::limit($mascota->color ?? '---', 20) }}
+                        </span>
                     </div>
 
                     <div class="highlight-box">
                         <span class="label">PROPIETARIO RESPONSABLE</span>
-                        <span class="value" style="font-size: 8px;">
-                            {{ strtoupper($mascota->dueno->nombres) }} {{ strtoupper($mascota->dueno->apellidos) }}
+                        <span class="value">
+                            {{ strtoupper(optional($mascota->dueno)->nombres ?? 'SIN REGISTRO') }}
+                            {{ strtoupper(optional($mascota->dueno)->apellidos ?? '') }}
                         </span>
                     </div>
                 </td>
