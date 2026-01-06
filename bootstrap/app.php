@@ -27,95 +27,95 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // 🔴 Error de validación
-        $exceptions->render(function (ValidationException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Los datos proporcionados no son válidos.',
-                    'errors' => $e->errors(),
-                ], 422);
-            }
-        });
+        // // 🔴 Error de validación
+        // $exceptions->render(function (ValidationException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Los datos proporcionados no son válidos.',
+        //             'errors' => $e->errors(),
+        //         ], 422);
+        //     }
+        // });
 
-        // 🔴 Ruta no encontrada
-        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Recurso no encontrado',
-                    'errors' => app()->isProduction() ? null : $e->getMessage(),
-                ], 404);
-            }
-        });
+        // // 🔴 Ruta no encontrada
+        // $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Recurso no encontrado',
+        //             'errors' => app()->isProduction() ? null : $e->getMessage(),
+        //         ], 404);
+        //     }
+        // });
 
-        // 🔴 Modelo Eloquent no encontrado
-        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Recurso no encontrado',
-                    'errors' => app()->isProduction() ? null : [
-                        'model' => $e->getModel(),
-                        'id' => $e->getIds(),
-                    ]
-                ], 404);
-            }
-        });
+        // // 🔴 Modelo Eloquent no encontrado
+        // $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Recurso no encontrado',
+        //             'errors' => app()->isProduction() ? null : [
+        //                 'model' => $e->getModel(),
+        //                 'id' => $e->getIds(),
+        //             ]
+        //         ], 404);
+        //     }
+        // });
 
-        // 🔴 Usuario no autenticado
-        $exceptions->render(function (AuthenticationException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No autorizado',
-                    'errors' => app()->isProduction() ? null : $e->getMessage(),
-                ], Response::HTTP_UNAUTHORIZED);
-            }
-        });
+        // // 🔴 Usuario no autenticado
+        // $exceptions->render(function (AuthenticationException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'No autorizado',
+        //             'errors' => app()->isProduction() ? null : $e->getMessage(),
+        //         ], Response::HTTP_UNAUTHORIZED);
+        //     }
+        // });
 
-        // 🔴 Usuario autenticado pero no autorizado
-        $exceptions->render(function (AuthorizationException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No tienes permiso para realizar esta acción',
-                    'errors' => app()->isProduction() ? null : $e->getMessage(),
-                ], Response::HTTP_FORBIDDEN);
-            }
-        });
+        // // 🔴 Usuario autenticado pero no autorizado
+        // $exceptions->render(function (AuthorizationException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'No tienes permiso para realizar esta acción',
+        //             'errors' => app()->isProduction() ? null : $e->getMessage(),
+        //         ], Response::HTTP_FORBIDDEN);
+        //     }
+        // });
 
-        // 🔴 Excepciones HTTP (403, 404, 500, etc.)
-        $exceptions->render(function (HttpException $e, Request $request) {
-            if ($request->is('api/*')) {
-                if ($e->getMessage() === 'This action is unauthorized.') {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'No tienes permiso para realizar esta acción',
-                        'errors' => [
-                            'code' => 403,
-                            'detail' => app()->isProduction() ? null : $e->getMessage(),
-                        ],
-                    ], Response::HTTP_FORBIDDEN);
-                }
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage() ?: 'Error del servidor',
-                    'errors' => app()->isProduction() ? null : [
-                        'code' => $e->getStatusCode()
-                    ]
-                ], $e->getStatusCode());
-            }
-        });
+        // // 🔴 Excepciones HTTP (403, 404, 500, etc.)
+        // $exceptions->render(function (HttpException $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         if ($e->getMessage() === 'This action is unauthorized.') {
+        //             return response()->json([
+        //                 'success' => false,
+        //                 'message' => 'No tienes permiso para realizar esta acción',
+        //                 'errors' => [
+        //                     'code' => 403,
+        //                     'detail' => app()->isProduction() ? null : $e->getMessage(),
+        //                 ],
+        //             ], Response::HTTP_FORBIDDEN);
+        //         }
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => $e->getMessage() ?: 'Error del servidor',
+        //             'errors' => app()->isProduction() ? null : [
+        //                 'code' => $e->getStatusCode()
+        //             ]
+        //         ], $e->getStatusCode());
+        //     }
+        // });
 
-        // 🔴 Cualquier otra excepción no controlada
-        $exceptions->render(function (\Exception $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => app()->isProduction() ? 'Error interno del servidor' : $e->getMessage(),
-                    'errors' => app()->isProduction() ? null : ['trace' => $e->getTrace()],
-                ], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        });
+        // // 🔴 Cualquier otra excepción no controlada
+        // $exceptions->render(function (\Exception $e, Request $request) {
+        //     if ($request->is('api/*')) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => app()->isProduction() ? 'Error interno del servidor' : $e->getMessage(),
+        //             'errors' => app()->isProduction() ? null : ['trace' => $e->getTrace()],
+        //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        //     }
+        // });
     })->create();

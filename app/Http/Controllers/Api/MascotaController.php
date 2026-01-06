@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateMascotaRequest;
 use App\Http\Resources\MascotaResource;
 use App\Models\Mascota;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -21,10 +22,25 @@ class MascotaController extends Controller implements HasMiddleware
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $request->validate([
+            'especie' => 'sometimes|string|in:Perro,Gato,Ave,Reptil,Otro',
+            'raza' => 'sometimes|string|max:100',
+            'dueno_id' => 'sometimes|integer|exists:duenos,id',
+            'per_page' => 'sometimes|integer|min:1|max:100',
+        ]);
+
+        $query = Mascota::query();
+
+
+        if ($paginated = request()->query('per_page')) {
+            return MascotaResource::collection(
+                $query->with(['dueno'])->paginate($paginated)
+            );
+        }
         return MascotaResource::collection(
-            Mascota::with(['dueno'])->get()
+            $query->with(['dueno'])->get()
         );
     }
 
@@ -63,7 +79,8 @@ class MascotaController extends Controller implements HasMiddleware
         $mascota = Mascota::with('dueno')->findOrFail($id);
 
         // Cargamos la vista y pasamos los datos
-        $pdf = Pdf::loadView('pdf.carnet', compact('mascota'));
+        $pdf = Pdf::loadView('pdf.carnet', compact('mascota'))
+            ->setOption('isHtml5ParserEnabled', true);
 
         // Configurar tamaño de papel: Personalizado o A4 (aquí usaremos A4 para imprimir fácil)
         $pdf->setPaper('a4', 'portrait');

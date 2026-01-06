@@ -195,8 +195,8 @@
                 </td>
                 <td class="header-text-cell">
                     <h1 class="header-title">MUNICIPALIDAD PROVINCIAL DE HUAMANGA</h1>
-                    <p class="header-subtitle">GERENCIA DE SERVICIOS PÚBLICOS</p>
-                    <p class="header-subtitle" style="font-weight: bold;">REGISTRO VETERINARIO MUNICIPAL</p>
+                    {{-- <p class="header-subtitle">GERENCIA DE SERVICIOS PÚBLICOS</p>
+                    <p class="header-subtitle" style="font-weight: bold;">REGISTRO VETERINARIO MUNICIPAL</p> --}}
                 </td>
             </tr>
         </table>
@@ -211,10 +211,12 @@
                     <div class="dni-label">N° REGISTRO (DNI)</div>
                     <div class="dni-value">{{ $mascota->dni_mascota }}</div>
 
-                    <div style="margin-top: 5px;">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data={{ $mascota->dni_mascota }}"
-                            width="45" style="opacity: 0.8">
+                    <div style="margin-top:5px; text-align: center;">
+                        <img src="data:image/svg+xml;base64, {{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(150)->margin(0)->generate($mascota->dni_mascota)) }}"
+                            width="45" height="45">
                     </div>
+
+
                 </td>
 
                 <td class="right-column">
